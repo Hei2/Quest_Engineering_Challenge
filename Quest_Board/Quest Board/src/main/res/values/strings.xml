@@ -7,5 +7,17 @@
     <string name="username_field">Username</string>
     <string name="password_field">Password</string>
     <string name="title_activity_quest_board">Quest Board</string>
+    <string name="title_activity_quest_details">Quest Details</string>
+    <string name="title_activity_registration">Registration</string>
+    <string name="register_button">Register</string>
+    <string name="remember_username_checkbox">Remember Username</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="name_field">Name</string>
+
+    <string-array name="alignment_array">
+        <item>Neutral</item>
+        <item>Good</item>
+        <item>Evil</item>
+    </string-array>
 
 </resources>

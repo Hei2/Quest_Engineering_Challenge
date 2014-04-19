@@ -5,13 +5,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-// Display individual quest details to the user
-public class QuestBoardActivity extends Activity {
+// Display the quests to the user and handle displaying the individual quest details to the user
+public class QuestDetailsActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quest_board);
+        setContentView(R.layout.activity_quest_details);
     }
 
 
@@ -19,7 +19,7 @@ public class QuestBoardActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.quest_board, menu);
+        getMenuInflater().inflate(R.menu.quest_details, menu);
         return true;
     }
 

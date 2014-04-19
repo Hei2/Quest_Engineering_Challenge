@@ -7,7 +7,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="challenge.questboard.MainActivity">
+    tools:context="challenge.questboard.RegistrationActivity">
 
     <EditText android:id="@+id/username_field"
         android:layout_width="match_parent"
@@ -20,18 +20,15 @@
         android:password="true"
         android:hint="@string/password_field" />
 
-    <CheckBox
-        android:layout_width="wrap_content"
+    <EditText
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/remember_username_checkbox"
-        android:id="@+id/checkBox" />
+        android:hint="@string/name_field"/>
 
-    <Button
-        android:layout_width="wrap_content"
+    <Spinner
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/login_button"
-        android:onClick="login" />
+        android:id="@+id/alignment_spinner" />
 
     <Button
         android:layout_width="wrap_content"

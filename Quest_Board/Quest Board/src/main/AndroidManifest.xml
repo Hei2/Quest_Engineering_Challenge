@@ -4,7 +4,6 @@
 
     <application
         android:allowBackup="true"
-        android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
@@ -24,6 +23,30 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="challenge.questboard.MainActivity" />
+        </activity>
+        <activity
+            android:name="challenge.questboard.QuestDetailsActivity"
+            android:label="@string/title_activity_quest_details"
+            android:parentActivityName="challenge.questboard.QuestBoardActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="challenge.questboard.QuestBoardActivity" />
+        </activity>
+        <activity
+            android:name="challenge.questboard.RegistrationActivity"
+            android:label="@string/title_activity_registration"
+            android:parentActivityName="challenge.questboard.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="challenge.questboard.MainActivity" />
+        </activity>
+        <activity
+            android:name="challenge.questboard.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName="challenge.questboard.QuestBoardActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="challenge.questboard.QuestBoardActivity" />
         </activity>
     </application>
 

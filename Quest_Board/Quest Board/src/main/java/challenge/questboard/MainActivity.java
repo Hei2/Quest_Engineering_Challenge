@@ -10,14 +10,16 @@ import android.widget.EditText;
 
 import java.lang.reflect.Field;
 
-
+// Display the login page to the user and handle the process of logging in
 public class MainActivity extends Activity {
+    public final static String EXTRA_USERNAME = "challenge.questboard.USERNAME";
+    public final static String EXTRA_PASSWORD = "challenge.questboard.PASSWORD";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -59,5 +61,17 @@ public class MainActivity extends Activity {
                 passwordText.setError("Username and/or Password incorrect.");
             }
         }
+    }
+
+    // Start the RegistrationActivity and pass the username and password fields for convenience
+    public void register(View view) {
+        Intent intent = new Intent(this, RegistrationActivity.class);
+        EditText usernameText = (EditText) findViewById(R.id.username_field);
+        EditText passwordText = (EditText) findViewById(R.id.password_field);
+        String username = usernameText.getText().toString();
+        String password = passwordText.getText().toString();
+        intent.putExtra(EXTRA_USERNAME, username);
+        intent.putExtra(EXTRA_PASSWORD, password);
+        startActivity(intent);
     }
 }
