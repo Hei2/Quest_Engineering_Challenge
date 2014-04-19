@@ -21,10 +21,11 @@
         android:hint="@string/password_field" />
 
     <CheckBox
+        android:id="@+id/remember_username_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/remember_username_checkbox"
-        android:id="@+id/checkBox" />
+        android:onClick="remember" />
 
     <Button
         android:layout_width="wrap_content"
