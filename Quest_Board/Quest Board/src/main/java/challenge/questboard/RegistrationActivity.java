@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.parse.ParseObject;
+
 
 public class RegistrationActivity extends Activity {
 
@@ -58,7 +60,39 @@ public class RegistrationActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    // Get all the input information and insert it into the Parse database
     public void register(View view) {
+        EditText usernameText = (EditText) findViewById(R.id.username_field);
+        EditText passwordText = (EditText) findViewById(R.id.password_field);
+        EditText nameText = (EditText) findViewById(R.id.name_field);
+        Spinner alignmentSpinner = (Spinner) findViewById(R.id.alignment_spinner);
+        String username = usernameText.getText().toString();
+        String password = passwordText.getText().toString();
+        String name = nameText.getText().toString();
+        String alignment = alignmentSpinner.getSelectedItem().toString();
 
+        // Keep track of whether or not the username or password fields are empty
+        boolean usernameEmpty = false;
+        boolean passwordEmpty = false;
+
+        // Display an error if either field is empty
+        if (username.length() == 0) {
+            usernameText.setError("Username required.");
+            usernameEmpty = true;
+        }
+        if (password.length() == 0) {
+            passwordText.setError("Password required.");
+            passwordEmpty = true;
+        }
+
+        // Check the database if neither the username or password fields are empty
+        if (!usernameEmpty && !passwordEmpty) {
+            ParseObject userInfo = new ParseObject("UserInfo");
+            userInfo.put("username", username);
+            userInfo.put("password", password);
+            userInfo.put("name", name);
+            userInfo.put("alignment", alignment);
+            userInfo.saveInBackground();
+        }
     }
 }

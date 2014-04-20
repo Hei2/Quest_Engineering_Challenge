@@ -12,6 +12,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.parse.FindCallback;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.util.List;
 
 // Display the login page to the user and handle the process of logging in
 public class MainActivity extends Activity {
@@ -83,21 +92,61 @@ public class MainActivity extends Activity {
     public void login(View view) {
         EditText usernameText = (EditText) findViewById(R.id.username_field);
         EditText passwordText = (EditText) findViewById(R.id.password_field);
-        String username = usernameText.getText().toString();
-        String password = passwordText.getText().toString();
+        final String username = usernameText.getText().toString();
+        final String password = passwordText.getText().toString();
 
+        // Keep track of whether or not the username or password fields are empty
+        boolean usernameEmpty = false;
+        boolean passwordEmpty = false;
+
+        // Display an error if either field is empty
         if (username.length() == 0) {
             usernameText.setError("Username required.");
-        } else if (password.length() == 0) {
+            usernameEmpty = true;
+        }
+        if (password.length() == 0) {
             passwordText.setError("Password required.");
+            passwordEmpty = true;
+        }
+
+        // Check the database if neither the username or password fields are empty
+        if (!usernameEmpty && !passwordEmpty) {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("UserInfo");
+            query.findInBackground(new FindCallback<ParseObject>() {
+                public void done(List<ParseObject> objects, ParseException e) {
+                    if (e == null) {
+                        // Keeps track of whether or not the user and password combination was
+                        // found in the database
+                        boolean foundUser = false;
+                        for (ParseObject parseObject : objects) {
+                            if (username.equals(parseObject.get("username")) &&
+                                    password.equals(parseObject.get("password"))) {
+                                foundUser = true;
+                                break;
+                            }
+                        }
+                        finishLogin(foundUser);
+                    } else {
+                        Toast toast = Toast.makeText(getApplicationContext(),
+                                "An error occured. Please try again.", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                }
+            });
+        }
+    }
+
+    // Either move the user to the QuestBoardActivity or display the error on the username and
+    // password fields
+    public void finishLogin(boolean foundUser) {
+        if (foundUser) {
+            Intent intent = new Intent(this, QuestBoardActivity.class);
+            startActivity(intent);
         } else {
-            if (username.equals("Lancelot") && password.equals("arthurDoesntKnow")) {
-                Intent intent = new Intent(this, QuestBoardActivity.class);
-                startActivity(intent);
-            } else {
-                usernameText.setError("Username and/or Password incorrect.");
-                passwordText.setError("Username and/or Password incorrect.");
-            }
+            EditText usernameText = (EditText) findViewById(R.id.username_field);
+            EditText passwordText = (EditText) findViewById(R.id.password_field);
+            usernameText.setError("Username and/or Password incorrect.");
+            passwordText.setError("Username and/or Password incorrect.");
         }
     }
 
