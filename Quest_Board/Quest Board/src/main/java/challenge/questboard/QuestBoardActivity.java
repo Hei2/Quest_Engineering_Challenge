@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -21,6 +23,13 @@ import java.util.List;
 public class QuestBoardActivity extends Activity {
     private String userID;
 
+    // Quest's objectID to be passed to the QuestDetailsActivity
+    public final static String EXTRA_QUESTID = "challenge.questboard.QUESTID";
+    public final static String EXTRA_TITLE = "challenge.questboard.TITLE";
+    public final static String EXTRA_GIVER = "challenge.questboard.GIVER";
+    public final static String EXTRA_REWARDGOLD = "challenge.questboard.GOLD";
+    public final static String EXTRA_REWARDXP = "challenge.questboard.XP";
+
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -35,9 +44,25 @@ public class QuestBoardActivity extends Activity {
     // Populate the ListView with the quests from the database
     public void populateList(List<Quest> questList) {
         // Populate the ListView with the quests
-        ListView listView = (ListView) findViewById(R.id.quest_listView);
+        final ListView listView = (ListView) findViewById(R.id.quest_listView);
         QuestListAdapter questListAdapter = new QuestListAdapter(this, R.layout.quest_list_item, questList);
         listView.setAdapter(questListAdapter);
+
+        // Move the user to the QuestDetailsActivity after clicking on a quest in the list
+        listView.setClickable(true);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Quest quest = (Quest) listView.getItemAtPosition(position);
+                Intent intent = new Intent(QuestBoardActivity.this, QuestDetailsActivity.class);
+                intent.putExtra(EXTRA_QUESTID, quest.getObjectID());
+                intent.putExtra(EXTRA_TITLE, quest.getTitle());
+                intent.putExtra(EXTRA_GIVER, quest.getGiver());
+                intent.putExtra(EXTRA_REWARDGOLD, quest.getRewardGold());
+                intent.putExtra(EXTRA_REWARDXP, quest.getRewardXP());
+                startActivity(intent);
+            }
+        });
     }
 
     // Retrieve the quests from the database before passing them to populateList()
@@ -55,18 +80,20 @@ public class QuestBoardActivity extends Activity {
                         for (ParseObject parseObject : objects) {
                             // Display all quests if the user's alignment is set to "Neutral"
                             if (userInfo.getString("alignment").equals("Neutral")) {
+                                String objectID = parseObject.getObjectId();
                                 String title = parseObject.getString("title");
                                 String giver = parseObject.getString("questGiver");
                                 int rewardGold = parseObject.getInt("rewardGold");
                                 int rewardXP = parseObject.getInt("rewardXP");
-                                questList.add(new Quest(title, giver, rewardGold, rewardXP));
+                                questList.add(new Quest(objectID, title, giver, rewardGold, rewardXP));
                             } else if (userInfo.getString("alignment").equals(parseObject
                                     .getString("alignment"))) {
+                                String objectID = parseObject.getObjectId();
                                 String title = parseObject.getString("title");
                                 String giver = parseObject.getString("questGiver");
                                 int rewardGold = parseObject.getInt("rewardGold");
                                 int rewardXP = parseObject.getInt("rewardXP");
-                                questList.add(new Quest(title, giver, rewardGold, rewardXP));
+                                questList.add(new Quest(objectID, title, giver, rewardGold, rewardXP));
                             }
 
                             populateList(questList);

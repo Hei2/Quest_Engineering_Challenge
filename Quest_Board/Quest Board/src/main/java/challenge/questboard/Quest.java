@@ -1,16 +1,21 @@
 package challenge.questboard;
 
+import android.os.Parcelable;
+
 // This object contains the information pertaining to a quest
 public class Quest {
-    private String title, giver;
+    private String objectID, title, giver;
     private int rewardGold, rewardXP;
 
-    public Quest(String title, String giver, int rewardGold, int rewardXP) {
+    public Quest(String objectID, String title, String giver, int rewardGold, int rewardXP) {
+        this.objectID = objectID;
         this.title = title;
         this.giver = giver;
         this.rewardGold = rewardGold;
         this.rewardXP = rewardXP;
     }
+
+    public String getObjectID() { return objectID; }
 
     public String getTitle() {
         return title;

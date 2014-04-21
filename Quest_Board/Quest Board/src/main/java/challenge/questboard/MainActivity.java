@@ -130,7 +130,19 @@ public class MainActivity extends Activity {
                                 break;
                             }
                         }
-                        finishLogin(foundUser, userID);
+
+                        // Either move the user to the QuestBoardActivity or display the error on the username and
+                        // password fields. If moving the user, send the user's database ID.
+                        if (foundUser) {
+                            Intent intent = new Intent(MainActivity.this, QuestBoardActivity.class);
+                            intent.putExtra(EXTRA_USERID, userID);
+                            startActivity(intent);
+                        } else {
+                            EditText usernameText = (EditText) findViewById(R.id.username_field);
+                            EditText passwordText = (EditText) findViewById(R.id.password_field);
+                            usernameText.setError("Username and/or Password incorrect.");
+                            passwordText.setError("Username and/or Password incorrect.");
+                        }
                     } else {
                         Toast toast = Toast.makeText(getApplicationContext(),
                                 "An error occurred. Please try again.", Toast.LENGTH_SHORT);
@@ -138,21 +150,6 @@ public class MainActivity extends Activity {
                     }
                 }
             });
-        }
-    }
-
-    // Either move the user to the QuestBoardActivity or display the error on the username and
-    // password fields. If moving the user, send the user's database ID.
-    public void finishLogin(boolean foundUser, String userID) {
-        if (foundUser) {
-            Intent intent = new Intent(this, QuestBoardActivity.class);
-            intent.putExtra(EXTRA_USERID, userID);
-            startActivity(intent);
-        } else {
-            EditText usernameText = (EditText) findViewById(R.id.username_field);
-            EditText passwordText = (EditText) findViewById(R.id.password_field);
-            usernameText.setError("Username and/or Password incorrect.");
-            passwordText.setError("Username and/or Password incorrect.");
         }
     }
 
