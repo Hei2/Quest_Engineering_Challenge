@@ -112,6 +112,18 @@ public class SettingsActivity extends Activity {
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    // Restart the QuestBoardActivity in case the alignment changed
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, QuestBoardActivity.class);
+        intent.putExtra(MainActivity.EXTRA_USERID, userID);
+        startActivity(intent);
     }
 }

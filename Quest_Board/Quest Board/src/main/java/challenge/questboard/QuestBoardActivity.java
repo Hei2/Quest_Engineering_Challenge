@@ -10,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -130,6 +129,7 @@ public class QuestBoardActivity extends Activity {
             Intent intent = new Intent(this, SettingsActivity.class);
             intent.putExtra(EXTRA_USERID, userID);
             startActivity(intent);
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
