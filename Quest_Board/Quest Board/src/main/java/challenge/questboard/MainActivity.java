@@ -28,6 +28,9 @@ public class MainActivity extends Activity {
     public final static String EXTRA_USERNAME = "challenge.questboard.USERNAME";
     public final static String EXTRA_PASSWORD = "challenge.questboard.PASSWORD";
 
+    // User's ObjectID to be passed to the QuestBoardActivity
+    public final static String EXTRA_USERID = "challenge.questboard.USERID";
+
     // Username field and checkbox to be saved in the preferences
     private static final String PREF_USERNAME = "username";
     private static final String PREF_REMEMBER = "remember";
@@ -118,17 +121,19 @@ public class MainActivity extends Activity {
                         // Keeps track of whether or not the user and password combination was
                         // found in the database
                         boolean foundUser = false;
+                        String userID = "";
                         for (ParseObject parseObject : objects) {
-                            if (username.equals(parseObject.get("username")) &&
-                                    password.equals(parseObject.get("password"))) {
+                            if (username.equals(parseObject.getString("username")) &&
+                                    password.equals(parseObject.getString("password"))) {
                                 foundUser = true;
+                                userID = parseObject.getObjectId();
                                 break;
                             }
                         }
-                        finishLogin(foundUser);
+                        finishLogin(foundUser, userID);
                     } else {
                         Toast toast = Toast.makeText(getApplicationContext(),
-                                "An error occured. Please try again.", Toast.LENGTH_SHORT);
+                                "An error occurred. Please try again.", Toast.LENGTH_SHORT);
                         toast.show();
                     }
                 }
@@ -137,10 +142,11 @@ public class MainActivity extends Activity {
     }
 
     // Either move the user to the QuestBoardActivity or display the error on the username and
-    // password fields
-    public void finishLogin(boolean foundUser) {
+    // password fields. If moving the user, send the user's database ID.
+    public void finishLogin(boolean foundUser, String userID) {
         if (foundUser) {
             Intent intent = new Intent(this, QuestBoardActivity.class);
+            intent.putExtra(EXTRA_USERID, userID);
             startActivity(intent);
         } else {
             EditText usernameText = (EditText) findViewById(R.id.username_field);

@@ -6,7 +6,7 @@
     <string name="login_button">Login</string>
     <string name="username_field">Username</string>
     <string name="password_field">Password</string>
-    <string name="title_activity_quest_board">Quest Board</string>
+    <string name="title_activity_log_in">Log In</string>
     <string name="title_activity_quest_details">Quest Details</string>
     <string name="title_activity_registration">Registration</string>
     <string name="register_button">Register</string>
