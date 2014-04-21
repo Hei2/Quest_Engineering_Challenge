@@ -23,7 +23,10 @@ import java.util.List;
 public class QuestBoardActivity extends Activity {
     private String userID;
 
-    // Quest's objectID to be passed to the QuestDetailsActivity
+    // User's objectID to be passed to the SettingsActivity
+    public final static String EXTRA_USERID = "challenge.questboard.USERID";
+
+    // Quest's info to be passed to the QuestDetailsActivity
     public final static String EXTRA_QUESTID = "challenge.questboard.QUESTID";
     public final static String EXTRA_TITLE = "challenge.questboard.TITLE";
     public final static String EXTRA_GIVER = "challenge.questboard.GIVER";
@@ -112,7 +115,6 @@ public class QuestBoardActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.quest_board, menu);
         return true;
@@ -125,6 +127,9 @@ public class QuestBoardActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            intent.putExtra(EXTRA_USERID, userID);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);

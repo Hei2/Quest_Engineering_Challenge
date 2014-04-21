@@ -20,13 +20,14 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 // Display the login page to the user and handle the process of logging in
 public class MainActivity extends Activity {
-    // Username and password fields to be passed to the RegistrationActivity
+    // Username field to be passed to the RegistrationActivity
     public final static String EXTRA_USERNAME = "challenge.questboard.USERNAME";
-    public final static String EXTRA_PASSWORD = "challenge.questboard.PASSWORD";
 
     // User's ObjectID to be passed to the QuestBoardActivity
     public final static String EXTRA_USERID = "challenge.questboard.USERID";
@@ -122,13 +123,21 @@ public class MainActivity extends Activity {
                         // found in the database
                         boolean foundUser = false;
                         String userID = "";
-                        for (ParseObject parseObject : objects) {
-                            if (username.equals(parseObject.getString("username")) &&
-                                    password.equals(parseObject.getString("password"))) {
-                                foundUser = true;
-                                userID = parseObject.getObjectId();
-                                break;
+                        try {
+                            String hashedPassword = hashPassword(password);
+                            for (ParseObject parseObject : objects) {
+                                if (username.equals(parseObject.getString("username"))) {
+                                    if (hashedPassword.equals(parseObject.getString("password"))) {
+                                        foundUser = true;
+                                        userID = parseObject.getObjectId();
+                                    }
+                                    break;
+                                }
                             }
+                        } catch (NoSuchAlgorithmException ex) {
+                            Toast toast = Toast.makeText(getApplicationContext(),
+                                    "An error occurred with your password. Please try again.", Toast.LENGTH_SHORT);
+                            toast.show();
                         }
 
                         // Either move the user to the QuestBoardActivity or display the error on the username and
@@ -157,11 +166,8 @@ public class MainActivity extends Activity {
     public void register(View view) {
         Intent intent = new Intent(this, RegistrationActivity.class);
         EditText usernameText = (EditText) findViewById(R.id.username_field);
-        EditText passwordText = (EditText) findViewById(R.id.password_field);
         String username = usernameText.getText().toString();
-        String password = passwordText.getText().toString();
         intent.putExtra(EXTRA_USERNAME, username);
-        intent.putExtra(EXTRA_PASSWORD, password);
         startActivity(intent);
     }
 
@@ -175,5 +181,22 @@ public class MainActivity extends Activity {
         } else {
             pref.edit().putBoolean(PREF_REMEMBER, false).commit();
         }
+    }
+
+    // Hash the given string using the SHA-256 algorithm
+    // Code from: http://www.mkyong.com/java/java-sha-hashing-example/
+    public static String hashPassword(String password) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(password.getBytes());
+
+        byte byteData[] = md.digest();
+
+        //convert the byte to hex format method 1
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < byteData.length; i++) {
+            sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+        }
+
+        return sb.toString();
     }
 }

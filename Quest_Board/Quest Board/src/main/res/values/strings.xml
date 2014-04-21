@@ -12,6 +12,8 @@
     <string name="register_button">Register</string>
     <string name="remember_username_checkbox">Remember Username</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="update_button">Update</string>
+    <string name="location_text">Location of Origin</string>
     <string name="name_field">Name</string>
 
     <string-array name="alignment_array">
