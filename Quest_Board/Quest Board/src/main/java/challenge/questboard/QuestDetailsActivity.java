@@ -1,20 +1,28 @@
 package challenge.questboard;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 // Display the quests to the user and handle displaying the individual quest details to the user
-public class QuestDetailsActivity extends Activity {
+public class QuestDetailsActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +49,30 @@ public class QuestDetailsActivity extends Activity {
             public void done(ParseObject questInfo, ParseException e) {
                 if (e == null) {
                     TextView descriptionText = (TextView) findViewById(R.id.description_text);
+                    GoogleMap questMap = ((MapFragment) getFragmentManager()
+                            .findFragmentById(R.id.quest_map)).getMap();
                     descriptionText.setText(questInfo.getString("description"));
+
+                    LatLng questLocation = new LatLng(questInfo.getParseGeoPoint("location").getLatitude(),
+                            questInfo.getParseGeoPoint("location").getLongitude());
+                    LatLng questGiverLocation = new LatLng(questInfo.getParseGeoPoint("questGiverLocation").getLatitude(),
+                            questInfo.getParseGeoPoint("questGiverLocation").getLongitude());
+
+                    LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+                    boundsBuilder.include(questLocation);
+                    boundsBuilder.include(questGiverLocation);
+                    LatLngBounds bounds = boundsBuilder.build();
+
+                    //questMap.moveCamera(CameraUpdateFactory.newLatLngZoom(questLocation, 13));
+                    questMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 200, 200, 0));
+                    // Place the markers for the quest's and the quest giver's locations
+                    questMap.addMarker(new MarkerOptions().title("Quest Location")
+                            .snippet("Go here to complete your quest")
+                            .position(questLocation));
+                    questMap.addMarker(new MarkerOptions().title("Quest Giver's Location")
+                            .snippet("You can find the quest giver here")
+                            .position(questGiverLocation));
+
                 } else {
                     Toast toast = Toast.makeText(getApplicationContext(),
                             "An error occurred. Please open this quest again.", Toast.LENGTH_SHORT);
