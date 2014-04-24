@@ -1,6 +1,7 @@
 package challenge.questboard;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
@@ -12,8 +13,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -21,8 +24,10 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.util.Locale;
+
 // Display the quests to the user and handle displaying the individual quest details to the user
-public class QuestDetailsActivity extends FragmentActivity {
+public class QuestDetailsActivity extends FragmentActivity implements GoogleMap.OnInfoWindowClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +58,8 @@ public class QuestDetailsActivity extends FragmentActivity {
                             .findFragmentById(R.id.quest_map)).getMap();
                     descriptionText.setText(questInfo.getString("description"));
 
+                    questMap.setOnInfoWindowClickListener(QuestDetailsActivity.this);
+
                     LatLng questLocation = new LatLng(questInfo.getParseGeoPoint("location").getLatitude(),
                             questInfo.getParseGeoPoint("location").getLongitude());
                     LatLng questGiverLocation = new LatLng(questInfo.getParseGeoPoint("questGiverLocation").getLatitude(),
@@ -71,7 +78,8 @@ public class QuestDetailsActivity extends FragmentActivity {
                             .position(questLocation));
                     questMap.addMarker(new MarkerOptions().title("Quest Giver's Location")
                             .snippet("You can find the quest giver here")
-                            .position(questGiverLocation));
+                            .position(questGiverLocation)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
 
                 } else {
                     Toast toast = Toast.makeText(getApplicationContext(),
@@ -103,6 +111,13 @@ public class QuestDetailsActivity extends FragmentActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onInfoWindowClick(final Marker marker) {
+        String uri = String.format(Locale.ENGLISH, "geo:%f,%f", marker.getPosition().latitude, marker.getPosition().longitude);
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        startActivity(intent);
     }
 
 }
